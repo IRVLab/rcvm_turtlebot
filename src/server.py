@@ -2,7 +2,7 @@
 
 import sys, math, threading, signal
 from time import sleep
-from math import pi
+from math import pi,radians
 from numpy import sign
 
 import rospy
@@ -16,7 +16,21 @@ from rcvm_core.srv import IndicateStay, Lost, Malfunction, Negative, Possibly, R
 '''
     Service handlers.
 '''
-def affirmative_handler(req):    
+def affirmative_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(7)
+    move_cmd = Twist() 
+    move_cmd.linear.x = .1
+    move_cmd.angular.z = 0
+
+    
+    for x in range(0,15):
+         cmd_vel.publish(move_cmd)
+         move_cmd.linear.x = move_cmd.linear.x * -1 
+         r.sleep() 
+
+
+
 
     return True
 
@@ -24,6 +38,9 @@ def attention_handler(req):
     return True
 
 def danger_handler(req):
+
+
+
     return True
 
 def follow_me_handler(req):
@@ -49,23 +66,26 @@ def follow_me_handler(req):
             sleep(.2)
     
     sleep(1)
-    
+
     # Turn 
     move_cmd.angular.z = 3
     move_cmd.linear.x =  0
 
     cmd_vel.publish(move_cmd)
+
     sleep(1.5)
 
-
-    # Moveforward 
     move_cmd.angular.z = 0
-    move_cmd.linear.x = 1
+    move_cmd.linear.x =  1
 
-    for x in range(0,2):
-        cmd_vel.publish(move_cmd)
-        sleep(.7)
+    cmd_vel.publish(move_cmd)
 
+
+
+
+
+
+ 
     return True
 
 
@@ -91,6 +111,45 @@ def indicate_stay_handler(req):
     return True
 
 def lost_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(.5)
+    move_cmd = Twist()
+    move_cmd.linear.x = .05
+    direction = 1.5
+
+
+    move_cmd.angular.z = direction
+    cmd_vel.publish(move_cmd)
+    r.sleep()
+    direction = direction*-1
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = direction 
+    cmd_vel.publish(move_cmd)
+    r.sleep()
+
+    move_cmd.angular.z = 0
+    move_cmd.linear.x = 1.5
+    cmd_vel.publish(move_cmd)
+
+    move_cmd.linear.x = .05
+    move_cmd.angular.z = -1.5 
+
+
+    r.sleep()
+
+    move_cmd.angular.z = direction
+    cmd_vel.publish(move_cmd)
+    r.sleep()
+    direction = direction*-1
+    move_cmd.angular.z = direction 
+    cmd_vel.publish(move_cmd)
+    r.sleep()
+
+    move_cmd.linear.x = .5
+    direction = 0
+    cmd_vel.publish(move_cmd)
+    r.sleep()
+
     return True
 
 def malfunction_handler(req):
@@ -116,13 +175,53 @@ def negative_handler(req):
 
 def possibly_handler(req):
 
+
     return True
 
 def repeat_last_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(10)
+    move_cmd = Twist()
+    move_cmd.linear.x = .3
+    move_cmd.angular.z = -2
+    cmd_vel.publish(move_cmd)
+    sleep(3)
+    move_cmd.linear.x =  0
+    move_cmd.angular.z = 2
+    cmd_vel.publish(move_cmd)
+
+
+
     return True
 
 def report_battery_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(10)
+    move_cmd = Twist()
+
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = radians(45)
+    for x in range(0,36): 
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    r.sleep()
+    sleep(3)
+    move_cmd.linear.x = -.5
+    move_cmd.angular.z = 0
+
+    cmd_vel.publish(move_cmd)
+    sleep(4)
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = radians(45)
     
+    for x in range(0,36): 
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+
+
+
 
     return True
 
