@@ -18,16 +18,17 @@ from rcvm_core.srv import IndicateStay, Lost, Malfunction, Negative, Possibly, R
 '''
 def affirmative_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
-    r = rospy.Rate(7)
+    r = rospy.Rate(10)
     move_cmd = Twist() 
-    move_cmd.linear.x = .1
+    move_cmd.linear.x = .2
     move_cmd.angular.z = 0
 
-    
     for x in range(0,15):
-         cmd_vel.publish(move_cmd)
-         move_cmd.linear.x = move_cmd.linear.x * -1 
-         r.sleep() 
+        cmd_vel.publish(move_cmd)
+        move_cmd.linear.x *= -1
+        sleep(.5)
+
+         
 
 
 
@@ -90,11 +91,111 @@ def follow_me_handler(req):
 
 
 # TODO: Respond to movement vector. Right now it just indicates down.
+
+def indicate_movement(cmd_vel,r,move_cmd,turndir):
+    
+    #turndir indicates which way the robot looks backwards
+
+    move_cmd.linear.x = .5
+    move_cmd.angular.z = 0
+
+    for x in range(0,20):
+            
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = 1*turndir
+        
+    for y in range(0,20):
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    sleep(1)
+
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = -1*turndir
+
+    for z in range(0,18):
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = 0
+    for w in range(0,10):
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+        
+
+    move_cmd.linear.x = .5
+    move_cmd.angular.z = 0
+
+    for x in range(0,5):
+            
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    return True 
+
+
+
 def indicate_movement_handler(req):
-    return True
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(10)
+    move_cmd = Twist()
+
+   
+    if req.direction.x == 1 and req.direction.y ==0:
+
+        indicate_movement(cmd_vel,r,move_cmd,1)
+
+    elif req.direction.x == -1 and req.direction.y ==0:
+        move_cmd.linear.x = 0
+        move_cmd.angular.z = -1
+        for x in range(0,33):
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+        move_cmd.angular.z = 0
+        for y in range(0,10):
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+
+        indicate_movement(cmd_vel,r,move_cmd,1)
+        return True
+
+    elif req.direction.x == 0 and req.direction.y ==1:
+        move_cmd.linear.x = 0
+        move_cmd.angular.z = -1
+        for x in range(0,17):
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+        move_cmd.angular.z = 0
+        for y in range(0,10):
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+        indicate_movement(cmd_vel,r,move_cmd,1)
+        return True
+
+    elif req.direction.x == 0 and req.direction.y ==-1:
+        move_cmd.linear.x = 0
+        move_cmd.angular.z = 1
+        for x in range(0,17):
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+        move_cmd.angular.z = 0
+        for y in range(0,10):
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+        indicate_movement(cmd_vel,r,move_cmd,-1)
+        return True
+    else:
+
+        return True 
  
 # TODO: Respond to object orientation.
 def indicate_object_handler(req):
+    
+
     return True
 
 def indicate_stay_handler(req):
