@@ -20,18 +20,13 @@ def affirmative_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
     r = rospy.Rate(10)
     move_cmd = Twist() 
-    move_cmd.linear.x = .2
+    move_cmd.linear.x = -.2
     move_cmd.angular.z = 0
 
     for x in range(0,15):
         cmd_vel.publish(move_cmd)
         move_cmd.linear.x *= -1
-        sleep(.5)
-
-         
-
-
-
+        sleep(1)
 
     return True
 
@@ -39,7 +34,72 @@ def attention_handler(req):
     return True
 
 def danger_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(5)
+    move_cmd = Twist()
+    move_cmd.linear.x = .2
+    move_cmd.angular.z = 0
 
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = .5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+    sleep(1)
+
+    move_cmd.angular.z = -.5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+    sleep(1)
+
+    move_cmd.angular.z = .5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+    sleep(1)
+
+    move_cmd.angular.z = -.5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+    
+    sleep(1)
+
+    move_cmd.linear.x = -.75
+    move_cmd.angular.z = 0
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = 1
+    finish = rospy.Time.now() + rospy.Duration.from_sec(.75)
+    counter = 0 
+    while not rospy.is_shutdown():
+        cmd_vel.publish(move_cmd)
+        
+        if rospy.Time.now() < finish:
+            if counter < 20:
+                finish = rospy.Time.now() + rospy.Duration.from_sec(.75)
+                move_cmd.angular.z *= -1
+                counter +=1
+            else:
+                move_cmd.angular.z = 0
+                cmd_vel.publish(move_cmd)
+                break
+        r.sleep()
 
 
     return True
@@ -79,14 +139,12 @@ def follow_me_handler(req):
     move_cmd.angular.z = 0
     move_cmd.linear.x =  1
 
-    cmd_vel.publish(move_cmd)
+    rate = rospy.Rate(5)
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        rate.sleep()
 
-
-
-
-
-
- 
     return True
 
 
@@ -163,7 +221,7 @@ def indicate_movement_handler(req):
         indicate_movement(cmd_vel,r,move_cmd,1)
         return True
 
-    elif req.direction.x == 0 and req.direction.y ==1:
+    elif req.direction.x == 0 and req.direction.y ==-1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = -1
         for x in range(0,17):
@@ -176,7 +234,7 @@ def indicate_movement_handler(req):
         indicate_movement(cmd_vel,r,move_cmd,1)
         return True
 
-    elif req.direction.x == 0 and req.direction.y ==-1:
+    elif req.direction.x == 0 and req.direction.y ==1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = 1
         for x in range(0,17):
@@ -194,7 +252,46 @@ def indicate_movement_handler(req):
  
 # TODO: Respond to object orientation.
 def indicate_object_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(5)
+    move_cmd = Twist()
+
+    q = req.relative_orientation
+    rads = euler_from_quaternion([q.x, q.y, q.z, q.w])
+    roll  = int(math.degrees(rads[0]))
+    pitch = int(math.degrees(rads[1]))
+    yaw   = int(math.degrees(rads[2]))
+
+    rospy.loginfo(yaw)
+
     
+    duration = abs(yaw) * 0.07777777777
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+
+    if yaw > 0:
+        move_cmd.angular.z = .25 
+    else:
+        move_cmd.angular.z = -.25 
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+    
+
+    move_cmd.linear.x = -.2
+    move_cmd.angular.z = 0
+
+    for x in range(0,10):
+        cmd_vel.publish(move_cmd)
+        move_cmd.linear.x *= -1
+        sleep(1)
+
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1.5)
+    move_cmd.linear.x = .2
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+
 
     return True
 
@@ -207,7 +304,7 @@ def indicate_stay_handler(req):
 
     now = rospy.Time.now()
 
-    while rospy.Time.now() < now + rospy.Duration.from_sec(25):
+    while rospy.Time.now() < now + rospy.Duration.from_sec(12.5):
         cmd_vel.publish(move_cmd)
     return True
 
@@ -254,6 +351,29 @@ def lost_handler(req):
     return True
 
 def malfunction_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(1)
+    move_cmd = Twist()
+
+    finish = rospy.Time.now() + rospy.Duration.from_sec(10)
+    move_cmd.linear.x = .1
+    move_cmd.angular.z = .2
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        move_cmd.angular.z *= -1
+        sleep(1)
+
+    move_cmd.linear.x = 0
+    direction = 1
+    for x in range(0,5):
+        move_cmd.angular.z = direction
+        cmd_vel.publish(move_cmd)
+        sleep(.7)
+        direction = direction*-1
+        move_cmd.angular.z = direction 
+        cmd_vel.publish(move_cmd)
+        sleep(.4)
+
     return True
     
 
@@ -283,15 +403,22 @@ def repeat_last_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
     r = rospy.Rate(10)
     move_cmd = Twist()
-    move_cmd.linear.x = .3
-    move_cmd.angular.z = -2
-    cmd_vel.publish(move_cmd)
+
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    move_cmd.linear.x = .2
+    move_cmd.angular.z = .2
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
     sleep(3)
-    move_cmd.linear.x =  0
-    move_cmd.angular.z = 2
-    cmd_vel.publish(move_cmd)
 
-
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    move_cmd.linear.x = -.2
+    move_cmd.angular.z = -.2
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
 
     return True
 
@@ -319,10 +446,6 @@ def report_battery_handler(req):
     for x in range(0,36): 
         cmd_vel.publish(move_cmd)
         r.sleep()
-
-
-
-
 
     return True
 
