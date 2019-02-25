@@ -119,12 +119,12 @@ def follow_me_handler(req):
         sleep(.4)
         cmd_vel.publish(move_cmd)
         sleep(.4)
-        if x!=1:
-            move_cmd.angular.z = -1.3
-            cmd_vel.publish(move_cmd)
-            sleep(.5)
-            cmd_vel.publish(move_cmd)
-            sleep(.2)
+
+        move_cmd.angular.z = -1.3
+        cmd_vel.publish(move_cmd)
+        sleep(.5)
+        cmd_vel.publish(move_cmd)
+        sleep(.2)
     
     sleep(1)
 
@@ -154,7 +154,7 @@ def indicate_movement(cmd_vel,r,move_cmd,turndir):
     
     #turndir indicates which way the robot looks backwards
 
-    move_cmd.linear.x = .5
+    move_cmd.linear.x = .25
     move_cmd.angular.z = 0
 
     for x in range(0,20):
@@ -185,7 +185,7 @@ def indicate_movement(cmd_vel,r,move_cmd,turndir):
         r.sleep()
         
 
-    move_cmd.linear.x = .5
+    move_cmd.linear.x = .25
     move_cmd.angular.z = 0
 
     for x in range(0,5):
@@ -221,7 +221,7 @@ def indicate_movement_handler(req):
         indicate_movement(cmd_vel,r,move_cmd,1)
         return True
 
-    elif req.direction.x == 0 and req.direction.y ==-1:
+    elif req.direction.x == 0 and req.direction.y ==1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = -1
         for x in range(0,17):
@@ -234,7 +234,7 @@ def indicate_movement_handler(req):
         indicate_movement(cmd_vel,r,move_cmd,1)
         return True
 
-    elif req.direction.x == 0 and req.direction.y ==1:
+    elif req.direction.x == 0 and req.direction.y ==-1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = 1
         for x in range(0,17):
@@ -269,9 +269,9 @@ def indicate_object_handler(req):
     finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
 
     if yaw > 0:
-        move_cmd.angular.z = .25 
+        move_cmd.angular.z = -.5 
     else:
-        move_cmd.angular.z = -.25 
+        move_cmd.angular.z = .5 
     while rospy.Time.now() < finish:
         cmd_vel.publish(move_cmd)
         r.sleep()
@@ -406,7 +406,7 @@ def repeat_last_handler(req):
 
     finish = rospy.Time.now() + rospy.Duration.from_sec(2)
     move_cmd.linear.x = .2
-    move_cmd.angular.z = .2
+    move_cmd.angular.z = .5
     while rospy.Time.now() < finish:
         cmd_vel.publish(move_cmd)
         r.sleep()
@@ -415,7 +415,7 @@ def repeat_last_handler(req):
 
     finish = rospy.Time.now() + rospy.Duration.from_sec(2)
     move_cmd.linear.x = -.2
-    move_cmd.angular.z = -.2
+    move_cmd.angular.z = -.5
     while rospy.Time.now() < finish:
         cmd_vel.publish(move_cmd)
         r.sleep()
