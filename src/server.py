@@ -109,35 +109,50 @@ def follow_me_handler(req):
     r = rospy.Rate(10)
     move_cmd = Twist()
 
-    move_cmd.linear.x = .05
+    move_cmd.linear.x = .1
+
+    duration = 45 * 0.07777777777
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+    move_cmd.angular.z = .5
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    duration = 20 * 0.07777777777
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+    move_cmd.angular.z = -.5
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+    move_cmd.angular.z = .5
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+    move_cmd.angular.z = -.5
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+    move_cmd.angular.z = .5
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    duration = 135 * 0.07777777777
+    finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
+    move_cmd.angular.z = .5
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+
     move_cmd.angular.z = 0
-
-    # Nudging in direction 
-    for x in range(0,2):
-        move_cmd.angular.z = 1.5
-        cmd_vel.publish(move_cmd)
-        sleep(.4)
-        cmd_vel.publish(move_cmd)
-        sleep(.4)
-
-        move_cmd.angular.z = -1.3
-        cmd_vel.publish(move_cmd)
-        sleep(.5)
-        cmd_vel.publish(move_cmd)
-        sleep(.2)
-    
-    sleep(1)
-
-    # Turn 
-    move_cmd.angular.z = 3
-    move_cmd.linear.x =  0
-
-    cmd_vel.publish(move_cmd)
-
-    sleep(1.5)
-
-    move_cmd.angular.z = 0
-    move_cmd.linear.x =  1
+    move_cmd.linear.x =  .5
 
     rate = rospy.Rate(5)
     finish = rospy.Time.now() + rospy.Duration.from_sec(1)
@@ -224,7 +239,7 @@ def indicate_movement_handler(req):
     elif req.direction.x == 0 and req.direction.y ==1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = -1
-        for x in range(0,17):
+        for x in range(0,25):
             cmd_vel.publish(move_cmd)
             r.sleep()
         move_cmd.angular.z = 0
@@ -237,7 +252,7 @@ def indicate_movement_handler(req):
     elif req.direction.x == 0 and req.direction.y ==-1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = 1
-        for x in range(0,17):
+        for x in range(0,25):
             cmd_vel.publish(move_cmd)
             r.sleep()
         move_cmd.angular.z = 0
