@@ -109,7 +109,7 @@ def follow_me_handler(req):
     r = rospy.Rate(10)
     move_cmd = Twist()
 
-    move_cmd.linear.x = .1
+    move_cmd.linear.x = 0
 
     duration = 45 * 0.07777777777
     finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
@@ -143,7 +143,7 @@ def follow_me_handler(req):
         cmd_vel.publish(move_cmd)
         r.sleep()
 
-    duration = 135 * 0.07777777777
+    duration = 75 * 0.07777777777
     finish = rospy.Time.now() + rospy.Duration.from_sec(duration)
     move_cmd.angular.z = .5
     while rospy.Time.now() < finish:
@@ -152,7 +152,7 @@ def follow_me_handler(req):
 
 
     move_cmd.angular.z = 0
-    move_cmd.linear.x =  .5
+    move_cmd.linear.x =  .3
 
     rate = rospy.Rate(5)
     finish = rospy.Time.now() + rospy.Duration.from_sec(1)
@@ -189,7 +189,7 @@ def indicate_movement(cmd_vel,r,move_cmd,turndir):
     move_cmd.linear.x = 0
     move_cmd.angular.z = -1*turndir
 
-    for z in range(0,18):
+    for z in range(0,30):
         cmd_vel.publish(move_cmd)
         r.sleep()
 
@@ -203,7 +203,7 @@ def indicate_movement(cmd_vel,r,move_cmd,turndir):
     move_cmd.linear.x = .25
     move_cmd.angular.z = 0
 
-    for x in range(0,5):
+    for x in range(0,10):
             
         cmd_vel.publish(move_cmd)
         r.sleep()
