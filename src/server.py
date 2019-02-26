@@ -319,7 +319,7 @@ def indicate_stay_handler(req):
 
     now = rospy.Time.now()
 
-    while rospy.Time.now() < now + rospy.Duration.from_sec(12.5):
+    while rospy.Time.now() < now + rospy.Duration.from_sec(13.5):
         cmd_vel.publish(move_cmd)
     return True
 
