@@ -252,7 +252,7 @@ def indicate_movement_handler(req):
     elif req.direction.x == 0 and req.direction.y ==-1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = 1
-        for x in range(0,25):
+        for x in range(0,25 ):
             cmd_vel.publish(move_cmd)
             r.sleep()
         move_cmd.angular.z = 0
@@ -314,7 +314,7 @@ def indicate_stay_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
     r = rospy.Rate(10)
     move_cmd = Twist()
-    move_cmd.linear.x = .5
+    move_cmd.linear.x = .2
     move_cmd.angular.z = .5
 
     now = rospy.Time.now()
