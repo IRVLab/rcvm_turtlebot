@@ -10,7 +10,7 @@ from tf.transformations import euler_from_quaternion
 from geometry_msgs.msg import Twist
 
 from rcvm_core.srv import Affirmative, Attention, Danger, FollowMe, IndicateMovement, IndicateObject
-from rcvm_core.srv import IndicateStay, Lost, Malfunction, Negative, Possibly, RepeatLast, ReportBattery
+from rcvm_core.srv import IndicateStay, Lost, Malfunction, Negative, RepeatLast, ReportBattery
 
 
 '''
@@ -409,11 +409,6 @@ def negative_handler(req):
         sleep(.4)
     return True
 
-def possibly_handler(req):
-
-
-    return True
-
 def repeat_last_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
     r = rospy.Rate(10)
@@ -469,8 +464,6 @@ if __name__ == "__main__":
     rospy.loginfo('Initializing Turtlebot RCVM server...')
     rospy.init_node('rcvm_server', argv=None, anonymous=True)
 
-
-
     rospy.Service('/rcvm/affirmative', Affirmative, affirmative_handler)
     rospy.Service('/rcvm/attention', Attention, attention_handler)
     rospy.Service('/rcvm/danger', Danger, danger_handler)
@@ -481,7 +474,6 @@ if __name__ == "__main__":
     rospy.Service('/rcvm/lost', Lost, lost_handler)
     rospy.Service('/rcvm/malfunction', Malfunction, malfunction_handler)
     rospy.Service('/rcvm/negative', Negative, negative_handler)
-    rospy.Service('/rcvm/possibly', Possibly, possibly_handler)
     rospy.Service('/rcvm/repeat_last', RepeatLast, repeat_last_handler)
     rospy.Service('/rcvm/report_battery', ReportBattery, report_battery_handler)
 
