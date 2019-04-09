@@ -239,7 +239,7 @@ def indicate_movement_handler(req):
     elif req.direction.x == 0 and req.direction.y ==1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = -1
-        for x in range(0,25):
+        for x in range(0,23):
             cmd_vel.publish(move_cmd)
             r.sleep()
         move_cmd.angular.z = 0
@@ -252,7 +252,7 @@ def indicate_movement_handler(req):
     elif req.direction.x == 0 and req.direction.y ==-1:
         move_cmd.linear.x = 0
         move_cmd.angular.z = 1
-        for x in range(0,25 ):
+        for x in range(0,23):
             cmd_vel.publish(move_cmd)
             r.sleep()
         move_cmd.angular.z = 0
