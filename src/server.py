@@ -77,7 +77,7 @@ def danger_handler(req):
 
     move_cmd.linear.x = -.75
     move_cmd.angular.z = 0
-    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1.25)
     while not rospy.is_shutdown() and rospy.Time.now() < finish:
         cmd_vel.publish(move_cmd)
         r.sleep()
