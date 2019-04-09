@@ -31,6 +31,17 @@ def affirmative_handler(req):
     return True
 
 def attention_handler(req):
+    cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+    r = rospy.Rate(10)
+    move_cmd = Twist() 
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = .75
+
+    #TODO: Tune this so that it's two full revolutions.
+    finish = rospy.Time.now() + rospy.Duration.from_sec(15)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
     return True
 
 def danger_handler(req):
@@ -323,45 +334,62 @@ def indicate_stay_handler(req):
 
 def lost_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
-    r = rospy.Rate(.5)
-    move_cmd = Twist()
-    move_cmd.linear.x = .05
-    direction = 1.5
-
-
-    move_cmd.angular.z = direction
-    cmd_vel.publish(move_cmd)
-    r.sleep()
-    direction = direction*-1
+    r = rospy.Rate(10)
+    move_cmd = Twist() 
     move_cmd.linear.x = 0
-    move_cmd.angular.z = direction 
-    cmd_vel.publish(move_cmd)
-    r.sleep()
+    move_cmd.angular.z = .4
 
+    finish = rospy.Time.now() + rospy.Duration.from_sec(3)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+    move_cmd.linear.x = .25
     move_cmd.angular.z = 0
-    move_cmd.linear.x = 1.5
-    cmd_vel.publish(move_cmd)
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+    sleep(2)
 
-    move_cmd.linear.x = .05
-    move_cmd.angular.z = -1.5 
+    move_cmd.linear.x = -.25
+    move_cmd.angular.z = 0
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
 
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = -.4
+    finish = rospy.Time.now() + rospy.Duration.from_sec(4)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
 
-    r.sleep()
+    move_cmd.linear.x = .25
+    move_cmd.angular.z = 0
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
 
-    move_cmd.angular.z = direction
-    cmd_vel.publish(move_cmd)
-    r.sleep()
-    direction = direction*-1
-    move_cmd.angular.z = direction 
-    cmd_vel.publish(move_cmd)
-    r.sleep()
+    sleep(2)
 
-    move_cmd.linear.x = .5
-    direction = 0
-    cmd_vel.publish(move_cmd)
-    r.sleep()
+    move_cmd.linear.x = -.25
+    move_cmd.angular.z = 0
+    finish = rospy.Time.now() + rospy.Duration.from_sec(2)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
 
-    return True
+    move_cmd.linear.x = 0
+    move_cmd.angular.z = .4
+    finish = rospy.Time.now() + rospy.Duration.from_sec(3)
+    while not rospy.is_shutdown() and rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+        r.sleep()
+
+        return True
 
 def malfunction_handler(req):
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
