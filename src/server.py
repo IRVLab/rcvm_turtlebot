@@ -397,16 +397,30 @@ def negative_handler(req):
     r = rospy.Rate(10)
     move_cmd = Twist()
     move_cmd.linear.x = 0
-    direction = 1
+    move_cmd.angular.z = .5
 
-    for x in range(0,5):
-        move_cmd.angular.z = direction
+    finish = rospy.Time.now() + rospy.Duration.from_sec(.5)
+    while rospy.Time.now() < finish:
         cmd_vel.publish(move_cmd)
-        sleep(.7)
-        direction = direction*-1
-        move_cmd.angular.z = direction 
+    sleep(.25)
+
+    move_cmd.angular.z = -.5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1)
+    while rospy.Time.now() < finish:
         cmd_vel.publish(move_cmd)
-        sleep(.4)
+    sleep(.25)
+
+    move_cmd.angular.z = .5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(1)
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+    sleep(.25)
+
+    move_cmd.angular.z = -.5
+    finish = rospy.Time.now() + rospy.Duration.from_sec(.5)
+    while rospy.Time.now() < finish:
+        cmd_vel.publish(move_cmd)
+
     return True
 
 def repeat_last_handler(req):
