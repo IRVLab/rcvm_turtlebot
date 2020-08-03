@@ -10,7 +10,7 @@
 
   <url type="website">https://github.umn.edu/fultonms/rcvm_turtlebot</url>
 
-  <author email="fulto081@umn.edu">Michael Fulton</author> -->
+  <author email="fulto081@umn.edu">Michael Fulton</author> 
 
   <buildtool_depend>catkin</buildtool_depend>
 
